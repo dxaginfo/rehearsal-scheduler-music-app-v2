@@ -1,0 +1,9 @@
+CREATE TABLE users (id SERIAL PRIMARY KEY, name VARCHAR(120), email VARCHAR(120) UNIQUE, password_hash VARCHAR(128), role VARCHAR(30), created_at TIMESTAMP DEFAULT NOW());
+CREATE TABLE events (id SERIAL PRIMARY KEY, title VARCHAR(120), description TEXT, datetime TIMESTAMP, location VARCHAR(120), created_by INTEGER, updated_at TIMESTAMP, FOREIGN KEY(created_by) REFERENCES users(id));
+CREATE TABLE event_members (event_id INTEGER, user_id INTEGER, status VARCHAR(30), PRIMARY KEY(event_id, user_id), FOREIGN KEY(event_id) REFERENCES events(id), FOREIGN KEY(user_id) REFERENCES users(id));
+CREATE TABLE messages (id SERIAL PRIMARY KEY, event_id INTEGER, user_id INTEGER, text TEXT, timestamp TIMESTAMP, FOREIGN KEY(event_id) REFERENCES events(id), FOREIGN KEY(user_id) REFERENCES users(id));
+CREATE TABLE setlists (id SERIAL PRIMARY KEY, event_id INTEGER, title VARCHAR(100), notes TEXT, created_by INTEGER, created_at TIMESTAMP, FOREIGN KEY(event_id) REFERENCES events(id), FOREIGN KEY(created_by) REFERENCES users(id));
+CREATE TABLE setlist_items (id SERIAL PRIMARY KEY, setlist_id INTEGER, song_title VARCHAR(100), notes TEXT, item_order INTEGER, FOREIGN KEY(setlist_id) REFERENCES setlists(id));
+CREATE TABLE files (id SERIAL PRIMARY KEY, uploaded_by INTEGER, event_id INTEGER, filename VARCHAR(200), file_url TEXT, type VARCHAR(30), uploaded_at TIMESTAMP, FOREIGN KEY(uploaded_by) REFERENCES users(id), FOREIGN KEY(event_id) REFERENCES events(id));
+CREATE TABLE notifications (id SERIAL PRIMARY KEY, user_id INTEGER, event_id INTEGER, type VARCHAR(30), status VARCHAR(30), sent_at TIMESTAMP, FOREIGN KEY(user_id) REFERENCES users(id), FOREIGN KEY(event_id) REFERENCES events(id));
+CREATE TABLE availability (id SERIAL PRIMARY KEY, user_id INTEGER, date DATE, available BOOLEAN, FOREIGN KEY(user_id) REFERENCES users(id));
